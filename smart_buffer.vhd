@@ -36,7 +36,6 @@ architecture bhv_sbuff of smart_buffer is
 
   type STATE_TYPE is (S_WAIT_UNTIL_DMA_READY, S_PROCESS, S_DONE);
   signal state, next_state : STATE_TYPE;
-  signal done, next_done : std_logic;
   signal count, next_count : std_logic_vector(C_COUNT_REG_WIDTH-1 downto 0);
 
   -- converts from reg_out_array to std_logic_vector
@@ -86,21 +85,17 @@ begin
   begin
       if (rst = '1') then
           state  <= S_WAIT_UNTIL_DMA_READY;
-          done <= '0';
           count <= ( others =>'0' );
       elsif (clk = '1' and clk'event) then
           state  <= next_state;
           count  <= next_count;
-          done <= next_done;
       end if;
   end process;
 
-  process(state, count, done, wr_en, rd_en, dma_status, data_in)
+  process(state, count, wr_en, rd_en, dma_status, data_in)
     variable count_reg : integer := 0;
   begin
       -- defaults
-      sb_done     <= done;
-      next_done   <= done;
       next_state  <= state;
       next_count  <= count;
 
@@ -109,11 +104,12 @@ begin
       sb_done     <= '0';
 
       case state is
-
           when S_WAIT_UNTIL_DMA_READY =>
 
-              -- set default done, just in case
+              -- set defaults for this state
               sb_done     <= '0';
+              full        <= '0';
+              empty       <= '1';
 
               if (dma_status = '0') then
                   next_state <= S_PROCESS;
@@ -154,10 +150,8 @@ begin
               end if;
 
           when S_DONE =>
-              --sb_done <= '1';
-              next_done <= '1';  -- could potentially update sb_done also
-                                   -- if we don't want to wait one cycle
-              --write_enable <= '0';
+
+              sb_done <= '1';  -- update done
               if (dma_status = '0') then
                   next_state  <= S_WAIT_UNTIL_DMA_READY;
               end if;

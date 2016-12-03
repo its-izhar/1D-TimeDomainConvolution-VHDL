@@ -119,8 +119,16 @@ process
     wait until rising_edge(clk);
     rd_en <= '0';
 
+    for i in 0 to 2 loop
+      wait until rising_edge(clk);
+    end loop;
+
     -- indicate the dma read has been finished
     dma_status <= '1';
+
+    for i in 0 to 2 loop
+      wait until rising_edge(clk);
+    end loop;
 
     clkEn <= '0';
     wait;
