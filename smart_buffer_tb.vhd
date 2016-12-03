@@ -1,7 +1,7 @@
 -- Izhar Shaikh
 --
--- File: smart_buffer.vhd
--- Description: Assembles the data from FIFO into "windows" and feeds the datapath
+-- File: smart_buffer_tb.vhd
+-- Description: testbench for smart_buffer.vhd
 --
 -- Entity has only one data_in of data_width size and output of size num_outputs*data_width
 
@@ -9,10 +9,10 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity sb_tb is
-end sb_tb;
+entity sb_test is
+end sb_test;
 
-architecture test_sb_default of sb_tb is
+architecture sb_test of smart_buffer_tb is
 
   constant C_NUM_OUTPUTS : positive := 3;
   constant C_DATA_WIDTH : positive := 16;
@@ -70,37 +70,60 @@ process
       wait until rising_edge(clk);
     end loop;
 
+    -- enable reads
+    rd_en <= '1';
+
     -- Start testing inputs
     data_in <= std_logic_vector(to_unsigned(1, C_DATA_WIDTH));
     wr_en <= '1';
     wait until rising_edge(clk);
-    wr_en <= '0';
-
-    for i in 0 to 1 loop
-      wait until rising_edge(clk);
-    end loop;
 
     data_in <= std_logic_vector(to_unsigned(2, C_DATA_WIDTH));
     wr_en <= '1';
     wait until rising_edge(clk);
     wr_en <= '0';
-
     wait until rising_edge(clk);
 
     data_in <= std_logic_vector(to_unsigned(3, C_DATA_WIDTH));
     wr_en <= '1';
     wait until rising_edge(clk);
     wr_en <= '0';
-
     wait until rising_edge(clk);
 
     data_in <= std_logic_vector(to_unsigned(4, C_DATA_WIDTH));
     wr_en <= '1';
     wait until rising_edge(clk);
     wr_en <= '0';
+    wait until rising_edge(clk);
+
+    data_in <= std_logic_vector(to_unsigned(5, C_DATA_WIDTH));
+    wr_en <= '1';
+    wait until rising_edge(clk);
+    wr_en <= '0';
+    wait until rising_edge(clk);
+
+    data_in <= std_logic_vector(to_unsigned(6, C_DATA_WIDTH));
+    wr_en <= '1';
+    wait until rising_edge(clk);
+    wr_en <= '0';
+
+    -- disable reads
+    rd_en <= '0';
+
+    for i in 0 to 5 loop
+      wait until rising_edge(clk);
+    end loop;
+
+    -- Just a check
+    rd_en <= '1';
+    wait until rising_edge(clk);
+    rd_en <= '0';
+
+    -- indicate the dma read has been finished
+    dma_status <= '1';
 
     clkEn <= '0';
     wait;
 
   end process;
-end test_sb_default;
+end sb_test;
