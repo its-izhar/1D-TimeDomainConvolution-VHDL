@@ -36,10 +36,12 @@ package user_pkg is
 
     -- app specific constants and ranges
     constant C_KERNEL_SIZE           : positive := 128;
+    constant C_SMART_BUFFER_SIZE     : positive := 128;
+    constant C_DATAPATH_INPUT_SIZE   : positive := 128;
     constant C_KERNEL_WIDTH          : positive := 16;
+    constant C_SIGNAL_WIDTH          : positive := 16;
     constant C_MAX_SIGNAL_SIZE       : positive := 2**(C_RAM1_ADDR_WIDTH+1);
     constant C_MAX_SIGNAL_SIZE_WIDTH : positive := C_RAM0_RD_SIZE_WIDTH;
-    constant C_SIGNAL_WIDTH          : positive := 16;
     constant C_MAX_OUTPUT_SIZE       : positive := C_MAX_SIGNAL_SIZE + C_KERNEL_SIZE - 1;
     constant C_OUTPUT_SIZE_WIDTH     : positive := bitsNeeded(C_MAX_OUTPUT_SIZE);
 
