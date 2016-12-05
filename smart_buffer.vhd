@@ -11,7 +11,7 @@ use ieee.numeric_std.all;
 
 entity smart_buffer is
   generic (
-    num_outputs  : positive := 3;
+    num_outputs  : positive := 128;
     data_width  : positive := 16 );
   port (
     clk         : in  std_logic;
