@@ -1,7 +1,8 @@
 -- Izhar Shaikh
 --
 -- File: kernel_buffer.vhd
--- Description: Assembles the data from FIFO into "windows" and feeds the datapath
+-- Description: Assembles the data from memory-map into a num_outputs times
+--  data_width sized "window" and feeds the datapath
 --
 -- Entity has only one data_in of data_width size and output of size num_outputs*data_width
 
